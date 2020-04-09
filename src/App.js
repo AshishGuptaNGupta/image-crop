@@ -1,26 +1,20 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import React,{useState} from 'react';
+import FilePicker from './FilePicker';
+import ImageList from './ImageList';
+export default ()=>{
+    const [showImg,setshowImg]=useState(false);
+    return(
+        <div className="main">
+            <button className="action-btn" onClick={()=>setshowImg(!showImg)}>Cloud Images</button>
+            {
+                showImg?
+                <ImageList />
+                :
+                <FilePicker />
+            }
+            
+            
+           
+        </div>
+    );
 }
-
-export default App;
