@@ -20,6 +20,8 @@ export default ()=>{
             setImgUrls([url]);
         }).catch(function(error) {
           console.log(error); 
+        });
+    }
       return (
           <div className="main">
           {
