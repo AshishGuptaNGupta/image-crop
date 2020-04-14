@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect,  } from 'react';
+import React, { useState, useRef,  } from 'react';
 import useImage from './useImage';
 import Cropper from './Cropper';
 import firebase from 'firebase/app';
