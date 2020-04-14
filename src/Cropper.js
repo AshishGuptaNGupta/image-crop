@@ -32,16 +32,19 @@ export default class Cropper extends Component{
         this.props.onChange(this.state.pos);
 
          if (this.state.dragging && !state.dragging) {
-             ReactDom.findDOMNode(this).addEventListener('mousemove', this.onTouchMove);
-             ReactDom.findDOMNode(this).addEventListener('mouseup', this.onTouchEnd)
-             ReactDom.findDOMNode(this).addEventListener('touchmove', this.onTouchMove);
-             ReactDom.findDOMNode(this).addEventListener('touchend', this.onTouchEnd)
+             this.containerRef.current.addEventListener('mousemove', this.onTouchMove);
+             this.containerRef.current.addEventListener('mouseup', this.onTouchMove);
+             this.containerRef.current.addEventListener('touchmove', this.onTouchMove);
+             this.containerRef.current.addEventListener('touchend', this.onTouchMove);
+           
            } 
            else if(!this.state.dragging && state.dragging) {
-             ReactDom.findDOMNode(this).removeEventListener('mousemove', this.onTouchMove)
-             ReactDom.findDOMNode(this).removeEventListener('mouseup', this.onTouchEnd)
-             ReactDom.findDOMNode(this).removeEventListener('touchmove', this.onTouchMove);
-             ReactDom.findDOMNode(this).removeEventListener('touchend', this.onTouchEnd)
+            //  ReactDom.findDOMNode(this).removeEventListener('mousemove', this.onTouchMove)
+            //  ReactDom.findDOMNode(this).removeEventListener('mouseup', this.onTouchEnd)
+             this.containerRef.current.addEventListener('mousemove', this.onTouchMove);
+             this.containerRef.current.addEventListener('mouseup', this.onTouchMove);
+             this.containerRef.current.addEventListener('touchmove', this.onTouchMove);
+             this.containerRef.current.addEventListener('touchend', this.onTouchMove);
            }
      }
     
@@ -123,7 +126,7 @@ export default class Cropper extends Component{
                 <div className="shadow">
                 <div style={{...this.cropperStyle, left:this.state.pos.x+"px",top:this.state.pos.y+"px",}} 
                  className="cropper" ref={this.cropRef} onTouchStart={this.onTouchStart}
-                 onMouseDown={this.onMouseDown}>
+                 onMouseDown={this.onTouchStart}>
                      </div>
                 </div>
             </div>
