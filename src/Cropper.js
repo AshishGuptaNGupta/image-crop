@@ -1,5 +1,4 @@
 import React,{Component} from 'react';
-import ReactDom from 'react-dom';
 
 export default class Cropper extends Component{
 
@@ -16,6 +15,7 @@ export default class Cropper extends Component{
         this.onTouchEnd=this.onTouchEnd.bind(this);
         this.onTouchMove=this.onTouchMove.bind(this);
         this.onTouchStart=this.onTouchStart.bind(this);
+        this.dimDiff={width:1,height:1}
     }
    
 
@@ -27,24 +27,37 @@ export default class Cropper extends Component{
         }
         return true;
     }
+
+    
+    componentDidMount(){
+
+        this.dimDiff= {
+            width:this.props.imgDimension.width/this.containerRef.current.getBoundingClientRect().width,
+            height:this.props.imgDimension.height/this.containerRef.current.getBoundingClientRect().height,
+        }
+        
+    }
     componentDidUpdate(props,state){
         if(!this.isEqual(this.state.pos,state.pos))
-        this.props.onChange(this.state.pos);
+        this.props.onChange({
+            x:this.state.pos.x*this.dimDiff.width,
+            y:this.state.pos.y*this.dimDiff.height,
+        });
 
          if (this.state.dragging && !state.dragging) {
              this.containerRef.current.addEventListener('mousemove', this.onTouchMove);
-             this.containerRef.current.addEventListener('mouseup', this.onTouchMove);
+             this.containerRef.current.addEventListener('mouseup', this.onTouchEnd);
              this.containerRef.current.addEventListener('touchmove', this.onTouchMove);
-             this.containerRef.current.addEventListener('touchend', this.onTouchMove);
+             this.containerRef.current.addEventListener('touchend', this.onTouchEnd);
            
            } 
            else if(!this.state.dragging && state.dragging) {
             //  ReactDom.findDOMNode(this).removeEventListener('mousemove', this.onTouchMove)
             //  ReactDom.findDOMNode(this).removeEventListener('mouseup', this.onTouchEnd)
-             this.containerRef.current.addEventListener('mousemove', this.onTouchMove);
-             this.containerRef.current.addEventListener('mouseup', this.onTouchMove);
-             this.containerRef.current.addEventListener('touchmove', this.onTouchMove);
-             this.containerRef.current.addEventListener('touchend', this.onTouchMove);
+             this.containerRef.current.removeEventListener('mousemove', this.onTouchMove);
+             this.containerRef.current.removeEventListener('mouseup', this.onTouchEnd);
+             this.containerRef.current.removeEventListener('touchmove', this.onTouchMove);
+             this.containerRef.current.removeEventListener('touchend', this.onTouchEnd);
            }
      }
     
@@ -116,13 +129,16 @@ export default class Cropper extends Component{
 
     render(){
         this.cropperStyle={
-            width:this.props.width+"px",
-            height:this.props.height+"px",
+            width:this.props.width/this.dimDiff.width+"px",
+            height:this.props.height/this.dimDiff.height+"px",
             position:"absolute",
+            backgroundColor: "unset",
+            border:"2px solid green",
+            zIndex: "999999",
         }
         return(
             <div ref={this.containerRef} className="container">
-                <img src={this.props.img} alt="img" />
+                <img src={this.props.img}  ref={this.containerRef}  alt="img" style={{maxWidth:"100%"}}/>
                 <div className="shadow">
                 <div style={{...this.cropperStyle, left:this.state.pos.x+"px",top:this.state.pos.y+"px",}} 
                  className="cropper" ref={this.cropRef} onTouchStart={this.onTouchStart}
@@ -133,3 +149,5 @@ export default class Cropper extends Component{
         );
     }
 }
+
+

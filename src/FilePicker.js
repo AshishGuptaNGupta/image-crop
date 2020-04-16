@@ -1,4 +1,4 @@
-import React, { useState, useRef,  } from 'react';
+import React, { useState, useRef, useEffect  } from 'react';
 import useImage from './useImage';
 import Cropper from './Cropper';
 import firebase from 'firebase/app';
@@ -17,6 +17,13 @@ export default ()=>{
     const [width,setWidth]=useState(200);
     const [height,setHeight]=useState(200);
     const [imgName,setImageName]=useState("");
+    const [imgDim,setImgDim]=useState({width:0,height:0});
+
+
+    useEffect(()=>{
+        if(canvasRef.current)
+        image64toCan(canvasRef,original64,{...cropPos,width,height})
+    },[width,height,cropPos,original64]);
 
     function selectFile(e){
         if(e.target.files && e.target.files.length>0){
@@ -36,7 +43,11 @@ export default ()=>{
                             reset();
                         }
                         else
-                        setOriginal64(e.target.result);
+                        {
+                            setImgDim({width:image.width,height:image.height});
+                            setOriginal64(e.target.result);
+                        }
+                        
                 }
             }
                 reader.readAsDataURL(e.target.files[0]);
@@ -86,6 +97,7 @@ export default ()=>{
         setImageName("");
         setHeight(200);
         setWidth(200); 
+        setImgDim({width:0,height:0});
     }
 
 
@@ -107,13 +119,13 @@ export default ()=>{
                 <label htmlFor="heiht">Height</label>
                 <input name="height" value={height} onChange={e=>setHeight(Number(e.target.value))} />
             </form>
-            <Cropper img={original64} width={width} height={height} initialPos={cropPos} onChange={setCropPos} />
+            <Cropper img={original64} width={width} height={height} initialPos={cropPos} onChange={setCropPos} imgDimension={imgDim} />
             <canvas ref={canvasRef}></canvas>
             {/* <canvas ref={canvasRef365X450}></canvas>
             <canvas ref={canvasRef365X212}></canvas>
             <canvas ref={canvasRef380X380}></canvas> */}
             {/* {canvasRef755X450.current?renderCanvas():""} */}
-            {canvasRef.current?image64toCan(canvasRef,original64,{...cropPos,width,height}):""}
+            {/* {canvasRef.current?image64toCan(canvasRef,original64,{...cropPos,width,height}):""} */}
             <div>
             <button className="action-btn" onClick={downloadImage}>Download</button>
             <button className="action-btn" onClick={reset}>New Image</button>
